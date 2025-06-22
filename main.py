@@ -57,7 +57,9 @@ def trigger_load(level: int, background_tasks: BackgroundTasks) -> Dict[str, str
         return {"error": "Please provide a utilization level between 1 and 100."}
     
     duration = 30
-    time.sleep(1)
+    import random
+    random_sleep = random.uniform(1.1, 10.0)
+    time.sleep(random_sleep)
     logger.info(f"'/load/{level}' called. Scheduling a {duration}s task in the background.")
     
     # FastAPI의 BackgroundTasks를 사용하여 즉시 응답하고, 작업은 백그라운드에서 실행
