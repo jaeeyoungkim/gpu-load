@@ -25,4 +25,8 @@ fi
 # "whatap-start-agent [CMD 또는 command로 전달된 명령어]" 형태로 실행됩니다.
 # 이를 통해 어떤 명령이 들어오든 whatap-start-agent로 감쌀 수 있습니다.
 echo "Starting application with whatap-start-agent wrapper..."
+echo "logsink_enabled=true" >> whatap.conf
+echo "logsink_trace_enabled=true" >> whatap.conf
+echo "trace_logging_enabled=true" >> whatap.conf
+
 exec whatap-start-agent "$@"
