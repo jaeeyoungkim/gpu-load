@@ -20,12 +20,24 @@ app = FastAPI(title="GPU Load Test API")
 def run_gpu_load(utilization_level: int, duration_sec: int):
     """지정된 시간 동안 목표 사용률에 맞는 GPU 부하를 발생시키는 함수"""
     
-    logger.info(f"STARTING GPU load task: {utilization_level}% for {duration_sec}s.")
+    if not torch.cuda.is_available():
+        logger.error("CUDA is not available. Cannot run GPU load task.")
+        return
+
+    gpu_count = torch.cuda.device_count()
+    logger.info(f"STARTING GPU load task: {utilization_level}% for {duration_sec}s. Visible GPUs: {gpu_count}")
     
-    device = torch.device('cuda')
+    # Explicitly use cuda:0 to avoid index errors
+    device = torch.device('cuda:0')
+    logger.info(f"Using device: {device}")
+
     size = 8192
-    a = torch.randn(size, size, device=device)
-    b = torch.randn(size, size, device=device)
+    try:
+        a = torch.randn(size, size, device=device)
+        b = torch.randn(size, size, device=device)
+    except Exception as e:
+        logger.error(f"Failed to initialize tensors on {device}: {e}")
+        raise e
 
     work_time = 0.005
     if utilization_level >= 100:
