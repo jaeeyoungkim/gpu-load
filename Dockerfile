@@ -1,6 +1,7 @@
 # Dockerfile (v2 - with Whatap Entrypoint)
 
-FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+
 WORKDIR /app
 
 # --- [추가] Whatap 에이전트 설치 ---
