@@ -28,7 +28,16 @@ def run_gpu_load(utilization_level: int, duration_sec: int):
         logger.error("CUDA is not available. Skipping GPU load.")
         return
 
-    device = torch.device('cuda')
+    # 명시적으로 cuda:0 사용 (Kubernetes에서 단일 GPU가 할당된 경우 항상 인덱스 0)
+    device_count = torch.cuda.device_count()
+    if device_count == 0:
+        logger.error("No CUDA devices found. Skipping GPU load.")
+        return
+    
+    device_index = 0  # 항상 첫 번째 사용 가능한 GPU 사용
+    device = torch.device(f'cuda:{device_index}')
+    logger.info(f"Using GPU device {device_index}: {torch.cuda.get_device_name(device_index)} (total devices: {device_count})")
+    
     size = 8192
     try:
         a = torch.randn(size, size, device=device)
